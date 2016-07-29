@@ -1,0 +1,404 @@
+<?xml version='1.0'?>
+<mavlink>
+     <include>common.xml</include>
+     <enums>
+          <enum name="DATA_TYPES">
+               <description>Content Types for data transmission handshake</description>
+               <entry value="1" name="DATA_TYPE_JPEG_IMAGE"/>
+               <entry value="2" name="DATA_TYPE_RAW_IMAGE"/>
+               <entry value="3" name="DATA_TYPE_KINECT"/>
+          </enum>
+          <enum name="MAV_CMD">
+               <!-- 1-10000 reserved for common commands -->
+               <entry value="10001" name="MAV_CMD_DO_START_SEARCH">
+                    <description>Starts a search</description>
+                    <param index="1">1 to arm, 0 to disarm</param>
+               </entry>
+               <entry value="10002" name="MAV_CMD_DO_FINISH_SEARCH">
+                    <description>Starts a search</description>
+                    <param index="1">1 to arm, 0 to disarm</param>
+               </entry>
+               <entry value="10003" name="MAV_CMD_NAV_SWEEP">
+                    <description>Starts a search</description>
+                    <param index="1">1 to arm, 0 to disarm</param>
+               </entry>
+          </enum>
+     </enums>
+     <messages>
+          <message id="151" name="SET_CAM_SHUTTER">
+               <field type="uint8_t" name="cam_no">Camera id</field>
+               <field type="uint8_t" name="cam_mode">Camera mode: 0 = auto, 1 = manual</field>
+               <field type="uint8_t" name="trigger_pin">Trigger pin, 0-3 for PtGrey FireFly</field>
+               <field type="uint16_t" name="interval">Shutter interval, in microseconds</field>
+               <field type="uint16_t" name="exposure">Exposure time, in microseconds</field>
+               <field type="float" name="gain">Camera gain</field>
+          </message>
+          <message id="152" name="IMAGE_TRIGGERED">
+               <field type="uint64_t" name="timestamp">Timestamp</field>
+               <field type="uint32_t" name="seq">IMU seq</field>
+               <field type="float" name="roll">Roll angle in rad</field>
+               <field type="float" name="pitch">Pitch angle in rad</field>
+               <field type="float" name="yaw">Yaw angle in rad</field>
+               <field type="float" name="local_z">Local frame Z coordinate (height over ground)</field>
+               <field type="float" name="lat">GPS X coordinate</field>
+               <field type="float" name="lon">GPS Y coordinate</field>
+               <field type="float" name="alt">Global frame altitude</field>
+               <field type="float" name="ground_x">Ground truth X</field>
+               <field type="float" name="ground_y">Ground truth Y</field>
+               <field type="float" name="ground_z">Ground truth Z</field>
+          </message>
+          <message id="153" name="IMAGE_TRIGGER_CONTROL">
+               <field type="uint8_t" name="enable">0 to disable, 1 to enable</field>
+          </message>
+          <message id="154" name="IMAGE_AVAILABLE">
+               <field type="uint64_t" name="cam_id">Camera id</field>
+               <field type="uint8_t" name="cam_no">Camera # (starts with 0)</field>
+               <field type="uint64_t" name="timestamp">Timestamp</field>
+               <field type="uint64_t" name="valid_until">Until which timestamp this buffer will stay valid</field>
+               <field type="uint32_t" name="img_seq">The image sequence number</field>
+               <field type="uint32_t" name="img_buf_index">Position of the image in the buffer, starts with 0</field>
+               <field type="uint16_t" name="width">Image width</field>
+               <field type="uint16_t" name="height">Image height</field>
+               <field type="uint16_t" name="depth">Image depth</field>
+               <field type="uint8_t" name="channels">Image channels</field>
+               <field type="uint32_t" name="key">Shared memory area key</field>
+               <field type="uint32_t" name="exposure">Exposure time, in microseconds</field>
+               <field type="float" name="gain">Camera gain</field>
+               <field type="float" name="roll">Roll angle in rad</field>
+               <field type="float" name="pitch">Pitch angle in rad</field>
+               <field type="float" name="yaw">Yaw angle in rad</field>
+               <field type="float" name="local_z">Local frame Z coordinate (height over ground)</field>
+               <field type="float" name="lat">GPS X coordinate</field>
+               <field type="float" name="lon">GPS Y coordinate</field>
+               <field type="float" name="alt">Global frame altitude</field>
+               <field type="float" name="ground_x">Ground truth X</field>
+               <field type="float" name="ground_y">Ground truth Y</field>
+               <field type="float" name="ground_z">Ground truth Z</field>
+          </message>
+          <message id="160" name="SET_POSITION_CONTROL_OFFSET">
+               <description>Message sent to the MAV to set a new offset from the currently controlled position</description>
+               <field type="uint8_t" name="target_system">System ID</field>
+               <field type="uint8_t" name="target_component">Component ID</field>
+               <field type="float" name="x">x position offset</field>
+               <field type="float" name="y">y position offset</field>
+               <field type="float" name="z">z position offset</field>
+               <field type="float" name="yaw">yaw orientation offset in radians, 0 = NORTH</field>
+          </message>
+          <!-- Message sent by the MAV once it sets a new position as reference in the controller -->
+          <message id="170" name="POSITION_CONTROL_SETPOINT">
+               <field type="uint16_t" name="id">ID of waypoint, 0 for plain position</field>
+               <field type="float" name="x">x position</field>
+               <field type="float" name="y">y position</field>
+               <field type="float" name="z">z position</field>
+               <field type="float" name="yaw">yaw orientation in radians, 0 = NORTH</field>
+          </message>
+          <message id="171" name="MARKER">
+               <field type="uint16_t" name="id">ID</field>
+               <field type="float" name="x">x position</field>
+               <field type="float" name="y">y position</field>
+               <field type="float" name="z">z position</field>
+               <field type="float" name="roll">roll orientation</field>
+               <field type="float" name="pitch">pitch orientation</field>
+               <field type="float" name="yaw">yaw orientation</field>
+          </message>
+          <message id="172" name="RAW_AUX">
+               <field type="uint16_t" name="adc1">ADC1 (J405 ADC3, LPC2148 AD0.6)</field>
+               <field type="uint16_t" name="adc2">ADC2 (J405 ADC5, LPC2148 AD0.2)</field>
+               <field type="uint16_t" name="adc3">ADC3 (J405 ADC6, LPC2148 AD0.1)</field>
+               <field type="uint16_t" name="adc4">ADC4 (J405 ADC7, LPC2148 AD1.3)</field>
+               <field type="uint16_t" name="vbat">Battery voltage</field>
+               <field type="int16_t" name="temp">Temperature (degrees celcius)</field>
+               <field type="int32_t" name="baro">Barometric pressure (hecto Pascal)</field>
+          </message>
+          <message id="180" name="WATCHDOG_HEARTBEAT">
+               <field type="uint16_t" name="watchdog_id">Watchdog ID</field>
+               <field type="uint16_t" name="process_count">Number of processes</field>
+          </message>
+          <message id="181" name="WATCHDOG_PROCESS_INFO">
+               <field type="uint16_t" name="watchdog_id">Watchdog ID</field>
+               <field type="uint16_t" name="process_id">Process ID</field>
+               <field type="char[100]" name="name">Process name</field>
+               <field type="char[147]" name="arguments">Process arguments</field>
+               <field type="int32_t" name="timeout">Timeout (seconds)</field>
+          </message>
+          <message id="182" name="WATCHDOG_PROCESS_STATUS">
+               <field type="uint16_t" name="watchdog_id">Watchdog ID</field>
+               <field type="uint16_t" name="process_id">Process ID</field>
+               <field type="uint8_t" name="state">Is running / finished / suspended / crashed</field>
+               <field type="uint8_t" name="muted">Is muted</field>
+               <field type="int32_t" name="pid">PID</field>
+               <field type="uint16_t" name="crashes">Number of crashes</field>
+          </message>
+          <message id="183" name="WATCHDOG_COMMAND">
+               <field type="uint8_t" name="target_system_id">Target system ID</field>
+               <field type="uint16_t" name="watchdog_id">Watchdog ID</field>
+               <field type="uint16_t" name="process_id">Process ID</field>
+               <field type="uint8_t" name="command_id">Command ID</field>
+          </message>
+          <message id="190" name="PATTERN_DETECTED">
+               <field type="uint8_t" name="type">0: Pattern, 1: Letter</field>
+               <field type="float" name="confidence">Confidence of detection</field>
+               <field type="char[100]" name="file">Pattern file name</field>
+               <field type="uint8_t" name="detected">Accepted as true detection, 0 no, 1 yes</field>
+          </message>
+          <message id="191" name="POINT_OF_INTEREST">
+               <description>Notifies the operator about a point of interest (POI). This can be anything detected by the
+                system. This generic message is intented to help interfacing to generic visualizations and to display
+                the POI on a map.
+            </description>
+               <field type="uint8_t" name="type">0: Notice, 1: Warning, 2: Critical, 3: Emergency, 4: Debug</field>
+               <field type="uint8_t" name="color">0: blue, 1: yellow, 2: red, 3: orange, 4: green, 5: magenta</field>
+               <field type="uint8_t" name="coordinate_system">0: global, 1:local</field>
+               <field type="uint16_t" name="timeout">0: no timeout, >1: timeout in seconds</field>
+               <field type="float" name="x">X Position</field>
+               <field type="float" name="y">Y Position</field>
+               <field type="float" name="z">Z Position</field>
+               <field type="char[26]" name="name">POI name</field>
+          </message>
+          <message id="192" name="POINT_OF_INTEREST_CONNECTION">
+               <description>Notifies the operator about the connection of two point of interests (POI). This can be anything detected by the
+                system. This generic message is intented to help interfacing to generic visualizations and to display
+                the POI on a map.
+            </description>
+               <field type="uint8_t" name="type">0: Notice, 1: Warning, 2: Critical, 3: Emergency, 4: Debug</field>
+               <field type="uint8_t" name="color">0: blue, 1: yellow, 2: red, 3: orange, 4: green, 5: magenta</field>
+               <field type="uint8_t" name="coordinate_system">0: global, 1:local</field>
+               <field type="uint16_t" name="timeout">0: no timeout, >1: timeout in seconds</field>
+               <field type="float" name="xp1">X1 Position</field>
+               <field type="float" name="yp1">Y1 Position</field>
+               <field type="float" name="zp1">Z1 Position</field>
+               <field type="float" name="xp2">X2 Position</field>
+               <field type="float" name="yp2">Y2 Position</field>
+               <field type="float" name="zp2">Z2 Position</field>
+               <field type="char[26]" name="name">POI connection name</field>
+          </message>
+          <message id="195" name="BRIEF_FEATURE">
+               <field type="float" name="x">x position in m</field>
+               <field type="float" name="y">y position in m</field>
+               <field type="float" name="z">z position in m</field>
+               <field type="uint8_t" name="orientation_assignment">Orientation assignment 0: false, 1:true</field>
+               <field type="uint16_t" name="size">Size in pixels</field>
+               <field type="uint16_t" name="orientation">Orientation</field>
+               <field type="uint8_t[32]" name="descriptor">Descriptor</field>
+               <field type="float" name="response">Harris operator response at this location</field>
+          </message>
+          <message id="200" name="ATTITUDE_CONTROL">
+               <field type="uint8_t" name="target">The system to be controlled</field>
+               <field type="float" name="roll">roll</field>
+               <field type="float" name="pitch">pitch</field>
+               <field type="float" name="yaw">yaw</field>
+               <field type="float" name="thrust">thrust</field>
+               <field type="uint8_t" name="roll_manual">roll control enabled auto:0, manual:1</field>
+               <field type="uint8_t" name="pitch_manual">pitch auto:0, manual:1</field>
+               <field type="uint8_t" name="yaw_manual">yaw auto:0, manual:1</field>
+               <field type="uint8_t" name="thrust_manual">thrust auto:0, manual:1</field>
+          </message>
+          <message id="205" name="DETECTION_STATS">
+               <field type="uint32_t" name="detections">Number of detections</field>
+               <field type="uint32_t" name="cluster_iters">Number of cluster iterations</field>
+               <field type="float" name="best_score">Best score</field>
+               <field type="int32_t" name="best_lat">Latitude of the best detection * 1E7</field>
+               <field type="int32_t" name="best_lon">Longitude of the best detection * 1E7</field>
+               <field type="int32_t" name="best_alt">Altitude of the best detection * 1E3</field>
+               <field type="uint32_t" name="best_detection_id">Best detection ID</field>
+               <field type="uint32_t" name="best_cluster_id">Best cluster ID</field>
+               <field type="uint32_t" name="best_cluster_iter_id">Best cluster ID</field>
+               <field type="uint32_t" name="images_done">Number of images already processed</field>
+               <field type="uint32_t" name="images_todo">Number of images still to process</field>
+               <field type="float" name="fps">Average images per seconds processed</field>
+          </message>
+          <message id="206" name="ONBOARD_HEALTH">
+               <field type="uint32_t" name="uptime">Uptime of system</field>
+               <field type="uint16_t" name="cpu_freq">CPU frequency</field>
+               <field type="uint8_t" name="cpu_load">CPU load in percent</field>
+               <field type="uint8_t" name="ram_usage">RAM usage in percent</field>
+               <field type="float" name="ram_total">RAM size in GiB</field>
+               <field type="uint8_t" name="swap_usage">Swap usage in percent</field>
+               <field type="float" name="swap_total">Swap size in GiB</field>
+               <field type="int8_t" name="disk_health">Disk health (-1: N/A, 0: ERR, 1: RO, 2: RW)</field>
+               <field type="uint8_t" name="disk_usage">Disk usage in percent</field>
+               <field type="float" name="disk_total">Disk total in GiB</field>
+               <field type="float" name="temp">Temperature</field>
+               <field type="float" name="voltage">Supply voltage V</field>
+               <field type="float" name="network_load_in">Network load inbound KiB/s</field>
+               <field type="float" name="network_load_out">Network load outbound in KiB/s </field>
+          </message>
+		  <!-- Defined by SIA -->
+		  <!-- UAVGP 2015 -->
+		  <message id="211" name="GPS_SIA">
+				<field type="uint64_t" name="timestamp">Timestamp</field>
+				<field type="uint32_t" name="gps_jingdu">jingdu.</field>
+				<field type="uint32_t" name="gps_weidu">weidu.</field>
+				<field type="float" name="gps_haiba">haiba.</field>
+				<field type="float" name="gps_bei">beixiangsudu.</field>
+				<field type="float" name="gps_dong">dongxiangsudu.</field>
+				<field type="float" name="gps_di">dixiangsudu.</field>
+				<field type="uint8_t" name="gps_weixing">weixinggeshu.</field>
+				<field type="uint8_t" name="gps_dingwei">dingweimoshi.</field>
+		  </message>
+		  <message id="212" name="MISSION_BUCKETS_POSITION">
+               <field type="double" name="bucketA_lat_curr">A -- latitude, in deg</field>
+               <field type="double" name="bucketA_lon_curr">longitude, in deg</field>
+               <field type="float" name="bucketA_alt_curr">altitude AMSL, in m</field>
+			   <field type="double" name="bucketA_lat_next">latitude, in deg</field>
+               <field type="double" name="bucketA_lon_next">longitude, in deg</field>
+               <field type="float" name="bucketA_alt_next">altitude AMSL, in m</field>
+			   <field type="double" name="bucketB_lat_curr">B -- latitude, in deg</field>
+               <field type="double" name="bucketB_lon_curr">longitude, in deg</field>
+               <field type="float" name="bucketB_alt_curr">altitude AMSL, in m</field>
+			   <field type="double" name="bucketB_lat_next">latitude, in deg</field>
+               <field type="double" name="bucketB_lon_next">longitude, in deg</field>
+               <field type="float" name="bucketB_alt_next">altitude AMSL, in m</field>
+			   <field type="double" name="bucketC_lat_curr">C -- latitude, in deg</field>
+               <field type="double" name="bucketC_lon_curr">longitude, in deg</field>
+               <field type="float" name="bucketC_alt_curr">altitude AMSL, in m</field>
+			   <field type="double" name="bucketC_lat_next">latitude, in deg</field>
+               <field type="double" name="bucketC_lon_next">longitude, in deg</field>
+               <field type="float" name="bucketC_alt_next">altitude AMSL, in m</field>
+			   <field type="double" name="bucketD_lat_curr">D -- latitude, in deg</field>
+               <field type="double" name="bucketD_lon_curr">longitude, in deg</field>
+               <field type="float" name="bucketD_alt_curr">altitude AMSL, in m</field>
+			   <field type="double" name="bucketD_lat_next">latitude, in deg</field>
+               <field type="double" name="bucketD_lon_next">longitude, in deg</field>
+               <field type="float" name="bucketD_alt_next">altitude AMSL, in m</field>
+			   <field type="double" name="copter_lat_home">home -- latitude, in deg</field>
+               <field type="double" name="copter_lon_home">longitude, in deg</field>
+               <field type="float" name="copter_alt_home">altitude AMSL, in m</field>
+			   <field type="double" name="copter_lat_guide">guide -- latitude, in deg</field>
+               <field type="double" name="copter_lon_guide">longitude, in deg</field>
+               <field type="float" name="copter_alt_guide">altitude AMSL, in m</field>
+          </message>
+		  <message id="213" name="MISSION_POS_POLL">
+				<field type="uint8_t" name="poll_buckets">poll buckets position commander</field>
+		  </message>
+		  <message id="214" name="MISSION_START_STOP">
+				<field type="uint8_t" name="start_flag">start flag</field>
+				<field type="uint8_t" name="main_commander">main commander for task</field>
+                <field type="uint8_t" name="sub_commander">sub commander for task</field>
+		  </message>
+		  <message id="215" name="VISION_COMMAND">
+				<field type="uint8_t" name="vision_cmd">vision control interface for handshack </field>
+		  </message>
+		  <message id="216" name="VISION_CIRCLE_ALL">
+				<field type="uint8_t" name="circle_sum">the number of circles</field>
+				<field type="uint8_t" name="marker_sum">the number of makers</field>
+                <field type="uint8_t" name="number_mode">mode status</field>
+				<field type="uint8_t" name="circle_0_number">first circle's maker number</field>
+				<field type="float" name="circle_0_x">relative local poosition x</field>
+				<field type="float" name="circle_0_y">relative local poosition y</field>
+				<field type="float" name="circle_0_z">relative local poosition z</field>
+				<field type="uint8_t" name="circle_1_number">second circle's maker number</field>
+				<field type="float" name="circle_1_x">relative local poosition x</field>
+				<field type="float" name="circle_1_y">relative local poosition y</field>
+				<field type="float" name="circle_1_z">relative local poosition z</field>
+				<field type="uint8_t" name="circle_2_number">circle's maker number</field>
+				<field type="float" name="circle_2_x">relative local poosition x</field>
+				<field type="float" name="circle_2_y">relative local poosition y</field>
+				<field type="float" name="circle_2_z">relative local poosition z</field>
+				<field type="uint8_t" name="circle_3_number">circle's maker number</field>
+				<field type="float" name="circle_3_x">relative local poosition x</field>
+				<field type="float" name="circle_3_y">relative local poosition y</field>
+				<field type="float" name="circle_3_z">relative local poosition z</field>
+				<field type="uint8_t" name="circle_4_number">circle's maker number</field>
+				<field type="float" name="circle_4_x">relative local poosition x</field>
+				<field type="float" name="circle_4_y">relative local poosition y</field>
+				<field type="float" name="circle_4_z">relative local poosition z</field>
+				<field type="uint8_t" name="circle_5_number">circle's maker number</field>
+				<field type="float" name="circle_5_x">relative local poosition x</field>
+				<field type="float" name="circle_5_y">relative local poosition y</field>
+				<field type="float" name="circle_5_z">relative local poosition z</field>
+				<field type="uint8_t" name="circle_6_number">circle's maker number</field>
+				<field type="float" name="circle_6_x">relative local poosition x</field>
+				<field type="float" name="circle_6_y">relative local poosition y</field>
+				<field type="float" name="circle_6_z">relative local poosition z</field>
+				<field type="uint8_t" name="circle_7_number">circle's maker number</field>
+				<field type="float" name="circle_7_x">relative local poosition x</field>
+				<field type="float" name="circle_7_y">relative local poosition y</field>
+				<field type="float" name="circle_7_z">relative local poosition z</field>
+		  </message>
+		  <message id="217" name="HC_BUCKETS_POLL">
+               <field type="double" name="bucketA_lat_curr">A -- latitude, in deg</field>
+               <field type="double" name="bucketA_lon_curr">longitude, in deg</field>
+               <field type="float" name="bucketA_alt_curr">altitude AMSL, in m</field>
+			   <field type="double" name="bucketA_lat_next">latitude, in deg</field>
+               <field type="double" name="bucketA_lon_next">longitude, in deg</field>
+               <field type="float" name="bucketA_alt_next">altitude AMSL, in m</field>
+			   <field type="double" name="bucketB_lat_curr">B -- latitude, in deg</field>
+               <field type="double" name="bucketB_lon_curr">longitude, in deg</field>
+               <field type="float" name="bucketB_alt_curr">altitude AMSL, in m</field>
+			   <field type="double" name="bucketB_lat_next">latitude, in deg</field>
+               <field type="double" name="bucketB_lon_next">longitude, in deg</field>
+               <field type="float" name="bucketB_alt_next">altitude AMSL, in m</field>
+			   <field type="double" name="bucketC_lat_curr">C -- latitude, in deg</field>
+               <field type="double" name="bucketC_lon_curr">longitude, in deg</field>
+               <field type="float" name="bucketC_alt_curr">altitude AMSL, in m</field>
+			   <field type="double" name="bucketC_lat_next">latitude, in deg</field>
+               <field type="double" name="bucketC_lon_next">longitude, in deg</field>
+               <field type="float" name="bucketC_alt_next">altitude AMSL, in m</field>
+			   <field type="double" name="bucketD_lat_curr">D -- latitude, in deg</field>
+               <field type="double" name="bucketD_lon_curr">longitude, in deg</field>
+               <field type="float" name="bucketD_alt_curr">altitude AMSL, in m</field>
+			   <field type="double" name="bucketD_lat_next">latitude, in deg</field>
+               <field type="double" name="bucketD_lon_next">longitude, in deg</field>
+               <field type="float" name="bucketD_alt_next">altitude AMSL, in m</field>
+			   <field type="double" name="lat_home">home -- latitude, in deg</field>
+               <field type="double" name="lon_home">longitude, in deg</field>
+               <field type="float" name="alt_home">altitude AMSL, in m</field>
+			   <field type="double" name="lat_guide">guide -- latitude, in deg</field>
+               <field type="double" name="lon_guide">longitude, in deg</field>
+               <field type="float" name="alt_guide">altitude AMSL, in m</field>
+          </message>
+		  <message id="218" name="HC_STATE_STATUS">
+				<field type="uint64_t" name="timestamp">Timestamp</field>
+				<field type="uint8_t" name="buckets_vaild">buckets pos valid status.</field>
+				<field type="uint8_t" name="cmd_recevied">commander receiver status.</field>
+				<field type="uint8_t" name="poll_recevied">poll commander received status.</field>
+				<field type="uint8_t" name="main_state">state machine current main state, return cmd.</field>
+				<field type="uint8_t" name="sec_state">state machine current sec state, return cmd.</field>
+				<field type="float" name="pos_sp_x">pos setpoint x</field>
+				<field type="float" name="pos_sp_y">pos setpoint y</field>
+				<field type="float" name="pos_sp_z">pos setpoint z</field>
+				<field type="float" name="vel_sp_x">vel setpoint x</field>
+				<field type="float" name="vel_sp_y">vel setpoint y</field>
+				<field type="float" name="vel_sp_z">vel setpoint z</field>
+				<field type="uint8_t" name="pos_en">pos controller enable</field>
+				<field type="uint8_t" name="vel_en">vel controller enable</field>
+		  </message>
+		  <!-- UAVGP 2016 -->
+		  <message id="220" name="TASK_STATUS_MONITOR">
+				<field type="uint64_t" name="timestamp">Timestamp</field>
+				<field type="uint8_t" name="num_odd_even">0, 1 or 2 represent spray all number, odd number or even number</field>
+				<field type="uint8_t" name="task_status_1">Current task status 1, 0~9</field>
+				<field type="uint8_t" name="task_status_2">Current task status 2, 0~4</field>
+				<field type="double" name="target_lat">current target latitude, in deg</field>
+                <field type="double" name="target_lon">current target longitude, in deg</field>
+                <field type="float" name="target_alt">current target altitude, in m</field>
+		  </message>
+		  <message id="221" name="FIXED_TARGET_POSITION">
+				<field type="double" name="home_lat">home point latitude, in deg</field>
+                <field type="double" name="home_lon">home point longitude, in deg</field>
+                <field type="float" name="home_alt">home point altitude, in m</field>
+				<field type="double" name="observe_lat">observe point latitude, in deg</field>
+                <field type="double" name="observe_lon">observe point longitude, in deg</field>
+                <field type="float" name="observe_alt">observe point altitude, in m</field>
+				<field type="double" name="spray_left_lat">spray point latitude (left), in deg</field>
+                <field type="double" name="spray_left_lon">spray point longitude (left), in deg</field>
+                <field type="float" name="spray_left_alt">spray point altitude (left), in m</field>
+				<field type="double" name="spray_right_lat">spray point latitude (right), in deg</field>
+                <field type="double" name="spray_right_lon">spray point longitude (right), in deg</field>
+                <field type="float" name="spray_right_alt">spray point altitude (right), in m</field>
+		  </message>
+		  <message id="222" name="VISION_NUM_SCAN">
+				<!-- Get every number and its position in the beginning -->
+				<field type="uint8_t" name="cur_num">Current number</field>
+				<field type="double" name="cur_num_lat">Current number latitude, in deg</field>
+                <field type="double" name="cur_num_lon">Current number longitude, in deg</field>
+                <field type="float" name="cur_num_alt">Current number altitude, in m</field>
+		  </message>
+		  <message id="223" name="VISION_ONE_NUM_GET">
+				<!-- Get the number by vision -->
+				<field type="uint64_t" name="timestamp">Timestamp</field>
+				<field type="uint8_t" name="num">Gotten number by vision</field>
+		  </message>
+     </messages>
+</mavlink>
