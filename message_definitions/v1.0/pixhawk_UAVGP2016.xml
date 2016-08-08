@@ -366,7 +366,6 @@
 		  </message>
 		  <!-- UAVGP 2016 -->
 		  <message id="224" name="TASK_STATUS_CHANGE">
-				<field type="uint64_t" name="timestamp">Timestamp</field>
 				<field type="uint8_t" name="num_odd_even">0, 1 or 2 represent spray all number, odd number or even number</field>
 				<field type="uint8_t" name="task_status_1">Current task status 1, 0~9</field>
 				<field type="uint8_t" name="task_status_2">Current task status 2, 0~4</field>
@@ -395,6 +394,7 @@
                 <field type="float" name="spray_right_alt">spray point altitude (right), in m</field>
 		  </message>
 		  <message id="225" name="FIXED_TARGET_RETURN">
+				<field type="uint64_t" name="timestamp">Timestamp</field>
 		  		<field type="double" name="home_lat">home point latitude, in deg</field>
                 <field type="double" name="home_lon">home point longitude, in deg</field>
                 <field type="float" name="home_alt">home point altitude, in m</field>
@@ -410,6 +410,7 @@
 		  </message>
 		  <message id="222" name="VISION_NUM_SCAN">
 				<!-- Get every number and its position in the beginning -->
+				<field type="uint64_t" name="timestamp">Timestamp</field>
 				<field type="uint8_t" name="num">No. of current number, 1~10</field>
 				<field type="uint8_t" name="cur_num">Current number</field>
 				<field type="double" name="cur_num_lat">Current number latitude, in deg</field>
@@ -419,6 +420,7 @@
 		  <message id="223" name="VISION_ONE_NUM_GET">
 				<!-- Get the number by vision -->
 				<field type="uint64_t" name="timestamp">Timestamp</field>
+				<field type="uint8_t" name="num">No. of current number, 1~5</field>
 				<field type="uint8_t" name="num">Gotten number by vision</field>
 		  </message>
      </messages>
