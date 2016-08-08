@@ -365,6 +365,12 @@
 				<field type="uint8_t" name="vel_en">vel controller enable</field>
 		  </message>
 		  <!-- UAVGP 2016 -->
+		  <message id="224" name="TASK_STATUS_CHANGE">
+				<field type="uint64_t" name="timestamp">Timestamp</field>
+				<field type="uint8_t" name="num_odd_even">0, 1 or 2 represent spray all number, odd number or even number</field>
+				<field type="uint8_t" name="task_status_1">Current task status 1, 0~9</field>
+				<field type="uint8_t" name="task_status_2">Current task status 2, 0~4</field>
+		  </message>
 		  <message id="220" name="TASK_STATUS_MONITOR">
 				<field type="uint64_t" name="timestamp">Timestamp</field>
 				<field type="uint8_t" name="num_odd_even">0, 1 or 2 represent spray all number, odd number or even number</field>
@@ -388,8 +394,23 @@
                 <field type="double" name="spray_right_lon">spray point longitude (right), in deg</field>
                 <field type="float" name="spray_right_alt">spray point altitude (right), in m</field>
 		  </message>
+		  <message id="225" name="FIXED_TARGET_RETURN">
+		  		<field type="double" name="home_lat">home point latitude, in deg</field>
+                <field type="double" name="home_lon">home point longitude, in deg</field>
+                <field type="float" name="home_alt">home point altitude, in m</field>
+				<field type="double" name="observe_lat">observe point latitude, in deg</field>
+                <field type="double" name="observe_lon">observe point longitude, in deg</field>
+                <field type="float" name="observe_alt">observe point altitude, in m</field>
+				<field type="double" name="spray_left_lat">spray point latitude (left), in deg</field>
+                <field type="double" name="spray_left_lon">spray point longitude (left), in deg</field>
+                <field type="float" name="spray_left_alt">spray point altitude (left), in m</field>
+				<field type="double" name="spray_right_lat">spray point latitude (right), in deg</field>
+                <field type="double" name="spray_right_lon">spray point longitude (right), in deg</field>
+                <field type="float" name="spray_right_alt">spray point altitude (right), in m</field>
+		  </message>
 		  <message id="222" name="VISION_NUM_SCAN">
 				<!-- Get every number and its position in the beginning -->
+				<field type="uint8_t" name="num">No. of current number, 1~10</field>
 				<field type="uint8_t" name="cur_num">Current number</field>
 				<field type="double" name="cur_num_lat">Current number latitude, in deg</field>
                 <field type="double" name="cur_num_lon">Current number longitude, in deg</field>
