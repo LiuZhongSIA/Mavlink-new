@@ -411,7 +411,6 @@
 		  <message id="222" name="VISION_NUM_SCAN">
 				<!-- Get every number and its position in the beginning -->
 				<field type="uint64_t" name="timestamp">Timestamp</field>
-				<field type="uint8_t" name="serial_num">No. of current number, 1~10</field>
 				<field type="uint8_t" name="cur_num">Current number</field>
 				<field type="double" name="cur_num_lat">Current number latitude, in deg</field>
                 <field type="double" name="cur_num_lon">Current number longitude, in deg</field>
